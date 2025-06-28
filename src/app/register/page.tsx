@@ -3,6 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { registerUser } from "../utils/actions/registerUser";
 
 export type UserData = {
   username: string;
@@ -17,10 +19,15 @@ const RegisterPage = () => {
     formState: { errors },
   } = useForm<UserData>();
 
-  const onSubmit = async (data: UserData) => {
-    console.log(data);
+  const router = useRouter();
 
+  const onSubmit = async (data: UserData) => {
     try {
+      const res = await registerUser(data);
+      if (res.success) {
+        alert(`${data?.username} Registered Successfully`);
+        router.push("/login");
+      }
     } catch (err: any) {
       console.error(err.message);
       throw new Error(err.message);
